@@ -370,7 +370,7 @@ export default function RoomPage() {
             <div className="input-group">
               <label className="input-label">Split Mode</label>
               <select className="input" value={form.splitType} onChange={e => setForm(f => ({ ...f, splitType: e.target.value }))}>
-                <option value="all_other">Option 1: Split equally among other members (exclude me)</option>
+                <option value="all_other">Option 1: Split equally among all members (including me)</option>
                 <option value="single_member">Option 2: Spend completely on one roommate</option>
               </select>
             </div>
@@ -395,7 +395,7 @@ export default function RoomPage() {
                   </span>
                 ) : (
                   <span>
-                    👉 Split equally among other {Math.max(1, (roomDetail?.memberCount || 1) - 1)} members. Each sends: <strong>₹{(parseFloat(form.amount) / Math.max(1, (roomDetail?.memberCount || 1) - 1)).toFixed(2)}</strong>
+                    👉 Split equally among all {roomDetail?.memberCount || 1} members. Each roommate sends: <strong>₹{(parseFloat(form.amount) / (roomDetail?.memberCount || 1)).toFixed(2)}</strong>
                   </span>
                 )}
               </div>

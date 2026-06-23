@@ -326,12 +326,12 @@ app.post('/api/rooms/:id/expenses', auth, async (req, res) => {
       if (!targetMemberId) return res.status(400).json({ error: 'Target roommate required for single split' });
       splits = [{ userId: targetMemberId, amount: parseFloat(amount), paid: false }];
     } else if (splitType === 'all_other') {
-      const otherMemberships = await RoomMember.find({ roomId: req.params.id, userId: { $ne: req.user.id }, status: 'active' });
-      if (otherMemberships.length === 0) {
-        return res.status(400).json({ error: 'No other members in the room to split with' });
+      const memberships = await RoomMember.find({ roomId: req.params.id, status: 'active' });
+      if (memberships.length === 0) {
+        return res.status(400).json({ error: 'No active members in the room' });
       }
-      const perHead = parseFloat(amount) / otherMemberships.length;
-      splits = otherMemberships.map(m => ({ userId: m.userId, amount: perHead, paid: false }));
+      const perHead = parseFloat(amount) / memberships.length;
+      splits = memberships.map(m => ({ userId: m.userId, amount: perHead, paid: false }));
     } else {
       // Default: split equally among all active members
       const memberships = await RoomMember.find({ roomId: req.params.id, status: 'active' });
