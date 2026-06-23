@@ -42,10 +42,11 @@ body {
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
-  height: 100dvh;
+  min-height: 100dvh;
   margin: 0;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
