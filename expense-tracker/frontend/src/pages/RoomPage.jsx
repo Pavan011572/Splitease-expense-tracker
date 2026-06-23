@@ -145,6 +145,20 @@ export default function RoomPage() {
     setModal(type);
   };
 
+  const openExpenseModal = () => {
+    setError('');
+    const otherMembers = roomDetail?.members?.filter(m => m.id !== user?.id) || [];
+    setForm(f => ({
+      ...f,
+      title: '',
+      amount: '',
+      category: 'General',
+      splitType: 'all_other',
+      targetMemberId: otherMembers[0]?.id || ''
+    }));
+    setModal('expense');
+  };
+
   const counts = { all: rooms.length, created: rooms.filter(r => r.adminId === user?.id).length, joined: rooms.filter(r => r.adminId !== user?.id).length, pending: 0 };
   const filtered = filter === 'all' ? rooms : filter === 'created' ? rooms.filter(r => r.adminId === user?.id) : filter === 'joined' ? rooms.filter(r => r.adminId !== user?.id) : [];
 
@@ -307,7 +321,7 @@ export default function RoomPage() {
             )}
 
             <div style={{ display: 'flex', gap: 10 }}>
-              <button className="btn btn-primary" style={{ flex: 1 }} onClick={() => { setModal('expense'); setError(''); }}>
+              <button className="btn btn-primary" style={{ flex: 1 }} onClick={openExpenseModal}>
                 + Add Expense
               </button>
               {roomDetail.adminId === user?.id ? (
