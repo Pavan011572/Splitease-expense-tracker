@@ -122,11 +122,11 @@ export default function VerifyPage() {
             </div>
             <div className="input-group">
               <label className="input-label">Amount (₹)</label>
-              <input className="input" type="number" placeholder="0.00" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} />
+              <input className="input" type="number" placeholder="Enter amount" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} />
             </div>
             <div className="input-group">
               <label className="input-label">UTR Number (Optional)</label>
-              <input className="input" placeholder="12-digit UTR number" value={form.utrNumber} onChange={e => setForm(f => ({ ...f, utrNumber: e.target.value }))} />
+              <input className="input" placeholder="Enter 12-digit UTR number" value={form.utrNumber} onChange={e => setForm(f => ({ ...f, utrNumber: e.target.value }))} />
             </div>
             <button className="btn btn-primary btn-full" onClick={submit} disabled={submitting}>
               {submitting ? 'Sending…' : 'Send Request'}

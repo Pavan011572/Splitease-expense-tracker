@@ -214,7 +214,7 @@ export default function RoomPage() {
             {error && <div className="alert alert-error">{error}</div>}
             <div className="input-group">
               <label className="input-label">Room Name</label>
-              <input className="input" placeholder="e.g. Goa Trip" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+              <input className="input" placeholder="Enter room name" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
             </div>
             <div className="input-group">
               <label className="input-label">Max Members</label>
@@ -339,11 +339,11 @@ export default function RoomPage() {
             {error && <div className="alert alert-error">{error}</div>}
             <div className="input-group">
               <label className="input-label">What was it for?</label>
-              <input className="input" placeholder="Dinner at hotel, petrol, etc." value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
+              <input className="input" placeholder="Enter expense description (e.g. Dinner, Petrol)" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} />
             </div>
             <div className="input-group">
               <label className="input-label">Amount (₹)</label>
-              <input className="input" type="number" placeholder="0.00" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} />
+              <input className="input" type="number" placeholder="Enter amount" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} />
             </div>
             <div className="input-group">
               <label className="input-label">Category</label>

@@ -88,7 +88,7 @@ export default function ProfilePage() {
             <div className="info-field-label">UPI ID</div>
             {editing === 'upiId' ? (
               <div style={{ display: 'flex', gap: 8, marginTop: 6 }}>
-                <input className="input" value={editVal} onChange={e => setEditVal(e.target.value)} placeholder="number@ybl" style={{ flex: 1 }} />
+                <input className="input" value={editVal} onChange={e => setEditVal(e.target.value)} placeholder="Enter your UPI ID" style={{ flex: 1 }} />
                 <button className="btn btn-primary btn-sm" onClick={saveEdit} disabled={saving}>Save</button>
               </div>
             ) : (

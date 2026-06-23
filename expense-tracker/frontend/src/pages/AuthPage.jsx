@@ -82,14 +82,14 @@ export default function AuthPage() {
       {tab === 'register' && (
         <div className="input-group">
           <label className="input-label">Full Name</label>
-          <input className="input" placeholder="Pothanaboyena Pavan" value={form.fullName} onChange={e => set('fullName', e.target.value)} />
+          <input className="input" placeholder="Enter your full name" value={form.fullName} onChange={e => set('fullName', e.target.value)} />
         </div>
       )}
 
       {tab !== 'forgot' && (
         <div className="input-group">
           <label className="input-label">Mobile Number</label>
-          <input className="input" placeholder="8328025515" value={form.mobile} onChange={e => set('mobile', e.target.value)} type="tel" />
+          <input className="input" placeholder="Enter your mobile number" value={form.mobile} onChange={e => set('mobile', e.target.value)} type="tel" />
         </div>
       )}
 
@@ -97,11 +97,11 @@ export default function AuthPage() {
         <>
           <div className="input-group">
             <label className="input-label">Email Address</label>
-            <input className="input" placeholder="pavan@gmail.com" value={form.email} onChange={e => set('email', e.target.value)} type="email" />
+            <input className="input" placeholder="Enter your email address" value={form.email} onChange={e => set('email', e.target.value)} type="email" />
           </div>
           <div className="input-group">
             <label className="input-label">UPI ID</label>
-            <input className="input" placeholder="8328025515@ybl" value={form.upiId} onChange={e => set('upiId', e.target.value)} />
+            <input className="input" placeholder="Enter your UPI ID" value={form.upiId} onChange={e => set('upiId', e.target.value)} />
           </div>
         </>
       )}
@@ -139,7 +139,7 @@ export default function AuthPage() {
             <>
               <div className="input-group">
                 <label className="input-label">Mobile Number</label>
-                <input className="input" placeholder="8328025515" value={form.mobile} onChange={e => set('mobile', e.target.value)} type="tel" />
+                <input className="input" placeholder="Enter your mobile number" value={form.mobile} onChange={e => set('mobile', e.target.value)} type="tel" />
               </div>
               <button className="btn btn-primary btn-full btn-lg" onClick={handleForgotPassword} disabled={loading || !form.mobile}>
                 {loading ? 'Sending OTP…' : 'Send OTP'}
@@ -153,7 +153,7 @@ export default function AuthPage() {
               </div>
               <div className="input-group">
                 <label className="input-label">Enter 6-Digit OTP</label>
-                <input className="input" placeholder="123456" value={otpCode} onChange={e => setOtpCode(e.target.value)} maxLength={6} style={{ letterSpacing: 6, fontSize: 18, textAlign: 'center' }} />
+                <input className="input" placeholder="Enter 6-Digit OTP" value={otpCode} onChange={e => setOtpCode(e.target.value)} maxLength={6} style={{ letterSpacing: 2, fontSize: 16, textAlign: 'center' }} />
               </div>
               <div className="input-group">
                 <label className="input-label">New Password</label>

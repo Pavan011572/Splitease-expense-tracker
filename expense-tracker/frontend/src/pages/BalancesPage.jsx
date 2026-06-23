@@ -215,7 +215,7 @@ export default function BalancesPage() {
 
             <div className="input-group">
               <label className="input-label">Amount (₹)</label>
-              <input className="input" type="number" placeholder="0.00" value={settleAmount} onChange={e => setSettleAmount(e.target.value)} />
+              <input className="input" type="number" placeholder="Enter amount" value={settleAmount} onChange={e => setSettleAmount(e.target.value)} />
             </div>
 
             <div className="input-group">
