@@ -13,7 +13,7 @@ export default function RoomPage() {
   const [roomDetail, setRoomDetail] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [form, setForm] = useState({ name: '', maxMembers: 6, description: '', code: '', title: '', amount: '', category: 'General', splitType: 'all_other', targetMemberId: '' });
+  const [form, setForm] = useState({ name: '', maxMembers: 6, description: '', code: '', title: '', amount: '', category: 'General', splitType: 'all_other', targetMemberId: '', targetMemberIds: [] });
   const [submitting, setSubmitting] = useState(false);
   const [leaveRequests, setLeaveRequests] = useState([]);
 
@@ -76,7 +76,8 @@ export default function RoomPage() {
         amount: parseFloat(form.amount),
         category: form.category,
         splitType: form.splitType,
-        targetMemberId: form.targetMemberId
+        targetMemberId: form.targetMemberId,
+        targetMemberIds: form.targetMemberIds
       });
       setModal(null);
       setSuccess('Expense added!');
@@ -140,7 +141,8 @@ export default function RoomPage() {
       code: '',
       name: '',
       splitType: 'all_other',
-      targetMemberId: otherMembers[0]?.id || ''
+      targetMemberId: otherMembers[0]?.id || '',
+      targetMemberIds: otherMembers.map(m => m.id)
     }));
     setModal(type);
   };
@@ -154,7 +156,8 @@ export default function RoomPage() {
       amount: '',
       category: 'General',
       splitType: 'all_other',
-      targetMemberId: otherMembers[0]?.id || ''
+      targetMemberId: otherMembers[0]?.id || '',
+      targetMemberIds: otherMembers.map(m => m.id)
     }));
     setModal('expense');
   };
@@ -371,18 +374,33 @@ export default function RoomPage() {
               <label className="input-label">Split Mode</label>
               <select className="input" value={form.splitType} onChange={e => setForm(f => ({ ...f, splitType: e.target.value }))}>
                 <option value="all_other">Option 1: Split equally among all members (including me)</option>
-                <option value="single_member">Option 2: Spend completely on one roommate</option>
+                <option value="single_member">Option 2: Spend completely on a selection of roommates (exclude me)</option>
               </select>
             </div>
 
             {form.splitType === 'single_member' && (
               <div className="input-group">
-                <label className="input-label">Select Roommate</label>
-                <select className="input" value={form.targetMemberId} onChange={e => setForm(f => ({ ...f, targetMemberId: e.target.value }))}>
+                <label className="input-label" style={{ marginBottom: 8 }}>Select Roommate(s)</label>
+                <div style={{ maxHeight: 150, overflowY: 'auto', border: '1px solid var(--border)', borderRadius: 8, padding: 10, display: 'flex', flexDirection: 'column', gap: 8, background: 'rgba(255,255,255,0.01)' }}>
                   {roomDetail?.members?.filter(m => m.id !== user?.id).map(m => (
-                    <option key={m.id} value={m.id}>{m.fullName}</option>
+                    <label key={m.id} style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', userSelect: 'none', padding: '2px 0' }}>
+                      <input
+                        type="checkbox"
+                        checked={form.targetMemberIds?.includes(m.id) || false}
+                        onChange={e => {
+                          const checked = e.target.checked;
+                          setForm(f => {
+                            const ids = checked
+                              ? [...(f.targetMemberIds || []), m.id]
+                              : (f.targetMemberIds || []).filter(id => id !== m.id);
+                            return { ...f, targetMemberIds: ids };
+                          });
+                        }}
+                      />
+                      <span style={{ fontSize: 14, color: 'var(--text-primary)' }}>{m.fullName}</span>
+                    </label>
                   ))}
-                </select>
+                </div>
               </div>
             )}
 
@@ -391,7 +409,7 @@ export default function RoomPage() {
               <div style={{ padding: '12px 14px', background: 'var(--primary-glow)', border: '1px solid var(--primary-border)', borderRadius: 10, fontSize: 13, marginBottom: 16, color: 'var(--primary)' }}>
                 {form.splitType === 'single_member' ? (
                   <span>
-                    👉 Assigned 100% to {roomDetail?.members?.find(m => m.id === form.targetMemberId)?.fullName || 'selected roommate'}. They send: <strong>₹{parseFloat(form.amount).toFixed(2)}</strong>
+                    👉 Split equally among {form.targetMemberIds?.length || 0} selected roommate(s). Each roommate sends: <strong>₹{(parseFloat(form.amount) / Math.max(1, form.targetMemberIds?.length || 1)).toFixed(2)}</strong>
                   </span>
                 ) : (
                   <span>
@@ -401,7 +419,7 @@ export default function RoomPage() {
               </div>
             )}
 
-            <button className="btn btn-primary btn-full" onClick={addExpense} disabled={submitting || !form.title || !form.amount || (form.splitType === 'single_member' && !form.targetMemberId)}>
+            <button className="btn btn-primary btn-full" onClick={addExpense} disabled={submitting || !form.title || !form.amount || (form.splitType === 'single_member' && (!form.targetMemberIds || form.targetMemberIds.length === 0))}>
               {submitting ? 'Adding…' : 'Add Expense'}
             </button>
           </div>

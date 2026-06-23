@@ -315,7 +315,7 @@ app.get('/api/rooms/:id/expenses', auth, async (req, res) => {
 
 app.post('/api/rooms/:id/expenses', auth, async (req, res) => {
   try {
-    const { title, amount, splitType, targetMemberId, category } = req.body;
+    const { title, amount, splitType, targetMemberId, targetMemberIds, category } = req.body;
     if (!title || !amount) return res.status(400).json({ error: 'title and amount required' });
     
     const room = await Room.findById(req.params.id);
@@ -323,8 +323,12 @@ app.post('/api/rooms/:id/expenses', auth, async (req, res) => {
     
     let splits = [];
     if (splitType === 'single_member') {
-      if (!targetMemberId) return res.status(400).json({ error: 'Target roommate required for single split' });
-      splits = [{ userId: targetMemberId, amount: parseFloat(amount), paid: false }];
+      const selectedIds = targetMemberIds || (targetMemberId ? [targetMemberId] : []);
+      if (selectedIds.length === 0) {
+        return res.status(400).json({ error: 'At least one target roommate must be selected' });
+      }
+      const perHead = parseFloat(amount) / selectedIds.length;
+      splits = selectedIds.map(id => ({ userId: id, amount: perHead, paid: false }));
     } else if (splitType === 'all_other') {
       const memberships = await RoomMember.find({ roomId: req.params.id, status: 'active' });
       if (memberships.length === 0) {
