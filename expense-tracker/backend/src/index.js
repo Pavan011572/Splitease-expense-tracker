@@ -335,12 +335,20 @@ app.post('/api/rooms/:id/expenses', auth, async (req, res) => {
         return res.status(400).json({ error: 'No active members in the room' });
       }
       const perHead = parseFloat(amount) / memberships.length;
-      splits = memberships.map(m => ({ userId: m.userId, amount: perHead, paid: false }));
+      splits = memberships.map(m => ({
+        userId: m.userId,
+        amount: perHead,
+        paid: m.userId.toString() === req.user.id
+      }));
     } else {
       // Default: split equally among all active members
       const memberships = await RoomMember.find({ roomId: req.params.id, status: 'active' });
       const perHead = parseFloat(amount) / memberships.length;
-      splits = memberships.map(m => ({ userId: m.userId, amount: perHead, paid: false }));
+      splits = memberships.map(m => ({
+        userId: m.userId,
+        amount: perHead,
+        paid: m.userId.toString() === req.user.id
+      }));
     }
     
     const expense = new Expense({
