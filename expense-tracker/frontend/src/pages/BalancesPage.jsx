@@ -170,7 +170,7 @@ export default function BalancesPage() {
           {expenses.length === 0 ? (
             <div style={{ textAlign: 'center', padding: '20px 0', color: 'var(--text-secondary)' }}>No expenses recorded</div>
           ) : expenses.map(e => {
-            const canDelete = e.paidById === user?.id && (new Date() - new Date(e.createdAt)) < 6 * 3600 * 1000;
+            const canDelete = e.paidById === user?.id;
             return (
               <div key={e.id} className="expense-item">
                 <div className="expense-header">

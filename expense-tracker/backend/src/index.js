@@ -335,19 +335,21 @@ app.post('/api/rooms/:id/expenses', auth, async (req, res) => {
         return res.status(400).json({ error: 'No active members in the room' });
       }
       const perHead = parseFloat(amount) / memberships.length;
-      splits = memberships.map(m => ({
+      const otherMemberships = memberships.filter(m => m.userId.toString() !== req.user.id);
+      splits = otherMemberships.map(m => ({
         userId: m.userId,
         amount: perHead,
-        paid: m.userId.toString() === req.user.id
+        paid: false
       }));
     } else {
       // Default: split equally among all active members
       const memberships = await RoomMember.find({ roomId: req.params.id, status: 'active' });
       const perHead = parseFloat(amount) / memberships.length;
-      splits = memberships.map(m => ({
+      const otherMemberships = memberships.filter(m => m.userId.toString() !== req.user.id);
+      splits = otherMemberships.map(m => ({
         userId: m.userId,
         amount: perHead,
-        paid: m.userId.toString() === req.user.id
+        paid: false
       }));
     }
     
@@ -377,10 +379,6 @@ app.delete('/api/expenses/:id', auth, async (req, res) => {
     const expense = await Expense.findById(req.params.id);
     if (!expense) return res.status(404).json({ error: 'Expense not found' });
     
-    const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
-    if (new Date(expense.createdAt) < sixHoursAgo)
-      return res.status(400).json({ error: 'Can only delete expenses within 6 hours' });
-    
     if (expense.paidById.toString() !== req.user.id)
       return res.status(403).json({ error: 'Only the payer can delete this expense' });
     
@@ -403,12 +401,16 @@ app.get('/api/rooms/:id/balances', auth, async (req, res) => {
     
     roomExpenses.forEach(exp => {
       const paidByIdStr = exp.paidById.toString();
+      const totalSplitToOthers = exp.splits
+        .filter(s => s.userId.toString() !== paidByIdStr)
+        .reduce((sum, s) => sum + s.amount, 0);
+
       if (balanceMap[paidByIdStr] !== undefined) {
-        balanceMap[paidByIdStr] += exp.amount;
+        balanceMap[paidByIdStr] += totalSplitToOthers;
       }
       exp.splits.forEach(s => {
         const splitUidStr = s.userId.toString();
-        if (balanceMap[splitUidStr] !== undefined) {
+        if (splitUidStr !== paidByIdStr && balanceMap[splitUidStr] !== undefined) {
           balanceMap[splitUidStr] -= s.amount;
         }
       });
@@ -523,10 +525,8 @@ app.patch('/api/verifications/:id', auth, async (req, res) => {
 // ─── RECENT DELETABLE EXPENSES ────────────────────────────────────────────────
 app.get('/api/expenses/recent', auth, async (req, res) => {
   try {
-    const sixHoursAgo = new Date(Date.now() - 6 * 60 * 60 * 1000);
     const recent = await Expense.find({
-      paidById: req.user.id,
-      createdAt: { $gte: sixHoursAgo }
+      paidById: req.user.id
     }).lean();
     
     const enriched = recent.map(e => ({ ...e, id: e._id.toString() }));

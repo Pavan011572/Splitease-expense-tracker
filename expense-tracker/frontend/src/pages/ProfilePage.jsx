@@ -108,13 +108,13 @@ export default function ProfilePage() {
 
       {/* Recent deletable expenses */}
       <div style={{ marginTop: 20, marginBottom: 10 }}>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>Deletable expenses (last 6 hours)</div>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>Deletable expenses</div>
       </div>
       {recentExpenses.length === 0 ? (
         <div className="empty-state" style={{ padding: '32px 24px' }}>
           <div className="empty-icon">⏱</div>
-          <div className="empty-title">Nothing recent</div>
-          <div className="empty-desc">Expenses created in the last 6h can be deleted here.</div>
+          <div className="empty-title">No expenses</div>
+          <div className="empty-desc">Expenses created by you can be deleted here.</div>
         </div>
       ) : (
         <div className="card">
